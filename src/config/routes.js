@@ -1,9 +1,12 @@
-// 路由配置文件
-// const routes = [
-//   {
-//     path: '/',
-//     component: "Home"
-//   }
-// ]
+import VerifyPhone from '@pages/regist/VerifyPhone'
 
-// export default routes
+// 路由配置文件
+const routes = [
+  {
+    path: '/regist/verifyPhone',
+    component: VerifyPhone,
+    exact: true,
+  }
+]
+
+export default routes
