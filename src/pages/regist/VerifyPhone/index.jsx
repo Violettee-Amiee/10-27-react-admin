@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { NavBar, Icon, InputItem, WingBlank, Modal, Toast } from "antd-mobile";
 import { createForm } from "rc-form";
 import { reqVerifyPhone } from "@api/regist";
+import { reqSendCode } from "@api/login";
 import VerifyButton from "@comps/VerifyButton";
 
 import "./index.css";
@@ -55,20 +56,44 @@ class VerifyPhone extends Component {
     callback();
   };
 
-  // 验证手机号
+  // 发送验证码
+  sendCode = (phone) => {
+    console.log("phone,test");
+    Modal.alert("", `我们将发送短信/语音验证码至：${phone}`, [
+      {
+        text: "取消",
+        // onPress: () => console.log("cancel"),
+      },
+      {
+        text: "确定",
+        style: { background: "red", color: "#fff" },
+        onPress: async () => {
+          // 发送请求 请求短信验证码
+          await reqSendCode(phone);
+
+          // 进行路由跳转
+          this.props.history.push("/regist/verifycode", phone);
+        },
+      },
+    ]);
+  };
+
+  // 验证手机号是否注册过
   verifyPhone = async () => {
     try {
       // 获取单个表单项的值
       const phone = this.props.form.getFieldValue("phone");
       // 获取所有表单项的值
-      // const value2 = this.props.form.getFieldsValue()
-      const result = await reqVerifyPhone(phone);
+      // const value2 = this.props.form.getFieldsValue();
+      await reqVerifyPhone(phone);
 
-      // 请求成功，手机号不存在
-      // 提示弹框，确认请求短信验证码
-      console.log("success", result.data);
+      console.log("success");
+      // 请求成功 - 手机号不存在
+      // 提示弹框 - 确认请求短信验证码
+      this.sendCode(phone);
     } catch (e) {
-      // 请求失败，手机号存在
+      if (e === "fail") return;
+      // 请求失败 - 手机号存在
       Toast.fail(e, 3);
     }
   };

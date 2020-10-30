@@ -2,3 +2,17 @@ html,
 body {
   background-color: #fff;
 }
+
+body {
+  font-size: 16px;
+}
+
+.left {
+  color: #000;
+}
+
+a.warning-btn {
+  width: 90%;
+  margin: 30px auto 0;
+  border-radius: 30px;
+}
