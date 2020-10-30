@@ -4,7 +4,7 @@ import { createForm } from "rc-form";
 import { reqSendCode } from "@api/login";
 import { reqVerifyCode } from "@api/regist";
 
-import msg from "./msg.png";
+import msg from "@assets/imgs/msg.png";
 import "./index.css";
 
 // 倒计时总长
