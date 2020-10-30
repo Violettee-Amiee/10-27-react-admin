@@ -1,26 +1,11 @@
 import React, { Component } from "react";
 
-import {
-  NavBar,
-  Icon,
-  InputItem,
-  WingBlank,
-  Button,
-  Modal,
-  Toast,
-} from "antd-mobile";
+import { NavBar, Icon, InputItem, WingBlank, Modal, Toast } from "antd-mobile";
 import { createForm } from "rc-form";
 import { reqVerifyPhone } from "@api/regist";
-import { reqVerifyCode } from "@api/common";
+import VerifyButton from "@comps/VerifyButton";
 
 import "./index.css";
-
-// web端接入文档：https://cloud.tencent.com/document/product/1110/36841#.E5.AE.9E.E4.BE.8B.E6.96.B9.E6.B3.95
-const verifyBtnProps = {
-  id: "TencentCaptcha",
-  "data-appid": "2030765311",
-  "data-cbfn": "verifyCallback",
-};
 
 class VerifyPhone extends Component {
   state = {
@@ -46,18 +31,6 @@ class VerifyPhone extends Component {
     //       { text: "同意", style: { background: "red", color: "#fff" } },
     //     ]
     //   );
-
-    window.verifyCallback = async (res) => {
-      // console.log(res, 111);
-      if (res.ret === 0) {
-        // 验证成功 客户端验证成功，还需要进行二次验证，服务端进行验证
-        await reqVerifyCode(res.randstr, res.ticket);
-        console.log(222);
-        // 服务端验证通过  --验证手机号
-        await this.VerifyPhone();
-        console.log("代码验证成功", 111);
-      }
-    };
   }
 
   // 当用户输入数据时就会触发
@@ -83,7 +56,7 @@ class VerifyPhone extends Component {
   };
 
   // 验证手机号
-  VerifyPhone = async () => {
+  verifyPhone = async () => {
     try {
       // 获取单个表单项的值
       const phone = this.props.form.getFieldValue("phone");
@@ -96,12 +69,13 @@ class VerifyPhone extends Component {
       console.log("success", result.data);
     } catch (e) {
       // 请求失败，手机号存在
-      Toast.fail(e, 1);
+      Toast.fail(e, 3);
     }
   };
 
   render() {
     const { isDisabled } = this.state;
+    // form属性：由createForm高阶组件传递而来
     const { getFieldProps } = this.props.form;
     return (
       <div>
@@ -128,22 +102,11 @@ class VerifyPhone extends Component {
               </div>
             </InputItem>
           </div>
-          <Button
-            style={{ display: isDisabled ? "block" : "none" }}
-            className="warning-btn"
-            type="warning"
-            disabled
-          >
-            下一步
-          </Button>
-          <Button
-            style={{ display: !isDisabled ? "block" : "none" }}
-            {...verifyBtnProps}
-            className="warning-btn"
-            type="warning"
-          >
-            下一步
-          </Button>
+          <VerifyButton
+            disabled={isDisabled}
+            callback={this.verifyPhone}
+            btnText="下一步"
+          />
         </WingBlank>
       </div>
     );
